@@ -1,0 +1,4 @@
+{
+    "python.pythonPath" : "/home/andre/.local/share/virtualenvs/projetosDjango-aSKhSTrp",
+    "python.linting.pylintArgs": ["--load-plugins", "pylint_django"]
+}
