@@ -30,9 +30,11 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+AUTH_USER_MODEL = 'api.User'
+
 INSTALLED_APPS = [
 
-    'api.apps.ApiConfig',
+    'api',
     'rest_framework',
     'rest_framework.authtoken',
     'django.contrib.admin',
@@ -107,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br'
 
 TIME_ZONE = 'UTC'
 
@@ -125,7 +127,6 @@ STATIC_URL = '/static/'
 
 
 # API
-
 REST_FRAMEWORK = {
 
    'DEFAULT_AUTHENTICATION_CLASSES': [

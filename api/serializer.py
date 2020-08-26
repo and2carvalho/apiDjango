@@ -1,20 +1,23 @@
 from rest_framework import serializers
 from django.conf import settings
-from django.contrib.auth.models import User
-from .models import Fazenda, Station
+#from django.contrib.auth.models import User
+from .models import Fazenda, Station, User
 import re
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
 
     confirm_password = serializers.CharField(write_only=True,style={'input_type':'password'})
-    
+
     class Meta:
         
         model = User
-        fields = ['id', 'username','email', 'password', 'confirm_password']
+        fields = ['id', 'username','email', 'password', 'confirm_password','date_joined','modified']
         extra_kwargs = {'password':{'write_only':True,'style': {'input_type':'password'}},
-                        'id':{'read_only':True}}
+                        'id':{'read_only':True},
+                        'date_joined':{'read_only':True},
+                        'modified':{'read_only':True}
+                        }
 
     def validate(self, data):
 

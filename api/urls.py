@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework import routers
-from .views import UsuarioViewSet, UserLogin, FazendaViewSet, StationViewSet, UserCreate
+from .views import (UsuarioViewSet, UserLogin, FazendaViewSet, 
+StationViewSet, UserCreate)
 
 app_name = 'api'
 
