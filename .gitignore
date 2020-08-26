@@ -1,4 +1,4 @@
-./.pylintrc
-./db.sqlite3
-./settings.json
-.vscode/*
+.pylintrc
+db.sqlite3
+settings.json
+.vscode/
