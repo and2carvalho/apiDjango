@@ -5,36 +5,48 @@ SessionAuthentication,BasicAuthentication)
 from rest_framework import viewsets, generics, mixins
 from rest_framework_jwt.views import ObtainJSONWebToken
 from rest_framework.authtoken.models import Token
-#from django.contrib.auth.models import User
-from .models import Fazenda, Station, User
+from .models import Fazenda, Station
 from .serializer import FazendaSerializer, StationSerializer, RegistrationSerializer
+from django.contrib.auth import get_user_model
+from django.db.models import Q
+
+User = get_user_model()
 
 class UserLogin(ObtainJSONWebToken):
 
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data,
+        serializer = self.get_serializer(data=request.data,
                                        context={'request': request})
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token = Token.objects.get(user=user).key
         return Response({
             'id':user.pk,
-            'name':user.username,
+            'name':user.name,
             'email':user.email,
+            'created':user.date_joined,
+            'modified':user.modified,
             'token':token
         })
 
-class UserCreate(generics.CreateAPIView):
+class UserViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin,
+                 mixins.UpdateModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin):
     queryset = User.objects.all()
     serializer_class = RegistrationSerializer
     permission_classes = [AllowAny]
 
-class UsuarioViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin,
-                 mixins.UpdateModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin):
-    queryset = User.objects.all()
-    serializer_class = RegistrationSerializer
-    authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
-    permission_classes = [IsAuthenticated]
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        user = User.objects.filter(email=serializer.validated_data['email'])[0]
+        return Response({
+                        'id':user.pk,
+                        'name':user.name,
+                        'email':user.email,
+                        'created':user.date_joined,
+                        'modified':user.modified
+                    })
 
 class FazendaViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin,
                      mixins.UpdateModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin):
@@ -51,3 +63,9 @@ class StationViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.Crea
     authentication_classes = (TokenAuthentication, SessionAuthentication, BasicAuthentication)
     permission_classes = [IsAuthenticated]
 
+    def destroy(self, request, *args, **kwargs):
+        station = self.get_object()
+        if station.fazenda != None:
+            return Response({'error':'Não é possível excluir uma estação vinculada a uma fazenda.'})
+        else:
+            return super(StationViewSet,self).destroy(request)
