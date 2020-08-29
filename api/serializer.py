@@ -2,6 +2,8 @@ from rest_framework_jwt.serializers import JSONWebTokenSerializer
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import Fazenda, Station
+from django.core.mail import send_mail
+from django.conf import settings
 import re
 
 User = get_user_model()
@@ -47,13 +49,21 @@ class RegistrationSerializer(serializers.ModelSerializer):
         else:
             return data 
 
-    #TODO mandar email via SandMail
+    def send_mail(self, data):
+
+        subject = 'Bem vindo a API de Teste!'
+        msg = 'Cadastro realizado com sucesso.\n\n' \
+            f'Username: {self.validated_data["name"]}' \
+            f'E-mail: {self.validated_data["email"]}\n'
+        return send_mail(subject, msg, settings.DEFAULT_FROM_EMAIL,[data.get('email')])
+
     def create(self, data):
-        
+
         password = data.pop('password')
         user = User(**data)
         user.set_password(password)
         user.save()
+        self.send_mail(data)
         return data
 
 class FazendaSerializer(serializers.ModelSerializer):

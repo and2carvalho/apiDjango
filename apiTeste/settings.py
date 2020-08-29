@@ -105,6 +105,18 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# E-mails
+
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '<your-server-port>'
+EMAIL_HOST_USER = 'your@djangoapp.com'
+EMAIL_HOST_PASSWORD = 'your-email account-password'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+
+DEFAULT_FROM_EMAIL = 'admin@localhost.com'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/

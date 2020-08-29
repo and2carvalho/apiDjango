@@ -39,7 +39,7 @@ class UserViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateM
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        user = User.objects.filter(email=serializer.validated_data['email'])[0]
+        user = User.objects.filter(email=serializer.validated_data.get('email'))[0]
         return Response({
                         'id':user.pk,
                         'name':user.name,

@@ -11,7 +11,7 @@ def create_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
 
-class UserManager(BaseUserManager):    
+class UserManager(BaseUserManager):
     
     def _create_user(self, name, email, password, is_staff, is_superuser, **extra_fields):
         now = timezone.now()
