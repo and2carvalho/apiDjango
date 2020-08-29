@@ -79,17 +79,7 @@ class FazendaSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({'error':'O CPF deve ter 11 números'})
         return data
 
-# criação de campo que aceita apenas uppercase
-class NameField(serializers.CharField):
-    def __init__(self, *args, **kwargs):
-        super(NameField, self).__init__(*args, **kwargs)
-
-    def get_prep_value(self, value):
-        return str(value).capitalize()
-
 class StationSerializer(serializers.ModelSerializer):
-
-    name = NameField(max_length=60)
 
     class Meta:
         model = Station
@@ -99,4 +89,8 @@ class StationSerializer(serializers.ModelSerializer):
             'longitude' : {'write_only':True},
             'fazenda' : {'write_only':True},
             'modified' : {'read_only':True}
-        }    
+        }
+
+    def create(self, data):
+        data['name'] = data.get('name').upper()
+        return super(StationSerializer, self).create(data)
